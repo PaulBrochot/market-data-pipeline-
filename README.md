@@ -31,3 +31,11 @@ Through automated optimization, the strategy performance was significantly enhan
    ```bash
    git clone [https://github.com/PaulBrochot/market-data-pipeline-.git](https://github.com/PaulBrochot/market-data-pipeline-.git)
    cd market-data-pipeline-
+   ---
+
+## 🗺️ Roadmap & Future Improvements
+You can track the ongoing development and upcoming features in the [Projects tab](LIEN_VERS_TON_PROJET_ICI).
+
+- [ ] **RSI Integration:** Adding momentum filters to refine entry points.
+- [ ] **Reporting Engine:** Exporting backtest results to PDF/Excel.
+- [ ] **Risk Management:** Implementing automated Stop-Loss calculations.
