@@ -1,6 +1,6 @@
 # 📈 QuantScanner AI : Algorithmic Trading & Strategy Optimizer
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_svg)](https://paul-quant-scanner.streamlit.app)
+🚀 **[Live Demo: Access the QuantScanner AI App](https://paul-quant-scanner.streamlit.app)**
 
 A professional Python-based quantitative analysis tool designed for financial data ingestion, algorithmic strategy backtesting, and parameter optimization. 
 
