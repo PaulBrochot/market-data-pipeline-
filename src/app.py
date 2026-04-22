@@ -33,7 +33,11 @@ def run_backtest(f_win, s_win, df):
     return ((final - 10000.0) / 10000.0) * 100
 
 # Data Fetching
-data = yf.Ticker(user_ticker).history(period=period)
+@st.cache_data(ttl=3600)  # Garde les données en mémoire pendant 1h
+def load_data(ticker, period):
+    return yf.Ticker(ticker).history(period=period)
+
+data = load_data(user_ticker, period)
 
 # --- OPTIMIZATION ENGINE ---
 if st.sidebar.button("🚀 Optimize Strategy"):
