@@ -6,6 +6,9 @@ A professional Python-based quantitative analysis tool designed for financial da
 
 Built as a technical proof-of-concept for **FinTech** and **Data Engineering** internships.
 
+## 🖥️ Preview
+![QuantScanner Dashboard](screenshot.jpg)
+
 ## 🚀 Key Features
 
 * **Universal Asset Search:** Integrated auto-suggest engine to find any stock, crypto, or forex pair by company name (no need to remember tickers).
