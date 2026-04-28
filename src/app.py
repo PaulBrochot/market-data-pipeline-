@@ -2,6 +2,7 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 import matplotlib.pyplot as plt
+import requests
 
 # --- CONFIGURATION DE LA PAGE ---
 st.set_page_config(page_title="QuantScanner AI - Pro Dashboard", layout="wide")
@@ -10,7 +11,7 @@ st.set_page_config(page_title="QuantScanner AI - Pro Dashboard", layout="wide")
 @st.cache_data(ttl=3600)
 def get_ticker_suggestions(query):
     if not query or len(query) < 2:
-        return {"Apple (AAPL)": "AAPL"}
+        return {"Nvidia (NVDA)": "NVDA"}
     try:
         search = yf.Search(query, max_results=5)
         if search.quotes:
@@ -22,8 +23,15 @@ def get_ticker_suggestions(query):
 # --- BARRE LATÉRALE (SIDEBAR) ---
 st.sidebar.header("🔍 Search & Settings")
 
-# Moteur de recherche universel
-search_query = st.sidebar.text_input("Type Company Name", "Apple")
+# Moteur de recherche universel (Vide par défaut)
+search_query = st.sidebar.text_input("Type Company Name", value="", placeholder="Ex: Nvidia, LVMH, Bitcoin...")
+
+# Arrêt de l'application si aucune recherche n'est faite
+if not search_query:
+    st.title("📈 Welcome to QuantScanner AI")
+    st.info("👋 Please enter a company name or ticker in the sidebar to start your analysis.")
+    st.stop()
+
 suggestions = get_ticker_suggestions(search_query)
 selected_display = st.sidebar.selectbox("Select Result", options=list(suggestions.keys()))
 user_ticker = suggestions[selected_display]
@@ -51,10 +59,14 @@ def run_backtest(f_win, s_win, df):
     final = cap if not in_pos else pos * d['Close'].iloc[-1]
     return ((final - 10000.0) / 10000.0) * 100
 
-# --- CHARGEMENT DES DONNÉES AVEC CACHE ---
+# --- CHARGEMENT DES DONNÉES AVEC CACHE ET ANTI-BAN ---
 @st.cache_data(ttl=3600)
 def load_data(ticker, period):
-    return yf.Ticker(ticker).history(period=period)
+    # Session personnalisée pour imiter un navigateur et éviter le blocage de Yahoo
+    session = requests.Session()
+    session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'})
+    
+    return yf.Ticker(ticker, session=session).history(period=period)
 
 data = load_data(user_ticker, period)
 
