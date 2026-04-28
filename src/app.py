@@ -59,14 +59,11 @@ def run_backtest(f_win, s_win, df):
     final = cap if not in_pos else pos * d['Close'].iloc[-1]
     return ((final - 10000.0) / 10000.0) * 100
 
-# --- CHARGEMENT DES DONNÉES AVEC CACHE ET ANTI-BAN ---
+# --- CHARGEMENT DES DONNÉES AVEC CACHE ---
 @st.cache_data(ttl=3600)
 def load_data(ticker, period):
-    # Session personnalisée pour imiter un navigateur et éviter le blocage de Yahoo
-    session = requests.Session()
-    session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'})
-    
-    return yf.Ticker(ticker, session=session).history(period=period)
+    # On laisse yfinance gérer sa propre session "curl_cffi" nativement
+    return yf.Ticker(ticker).history(period=period)
 
 data = load_data(user_ticker, period)
 
