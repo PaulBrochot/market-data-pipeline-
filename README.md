@@ -7,7 +7,7 @@ A professional Python-based quantitative analysis tool designed for financial da
 Built as a technical proof-of-concept for **FinTech** and **Data Engineering** internships.
 
 ## 🖥️ Preview
-![QuantScanner Dashboard](screenshot.jpg)
+![QuantScanner Dashboard](screenshot.png)
 
 ## 🚀 Key Features
 
