@@ -59,11 +59,17 @@ def run_backtest(f_win, s_win, df):
     final = cap if not in_pos else pos * d['Close'].iloc[-1]
     return ((final - 10000.0) / 10000.0) * 100
 
-# --- CHARGEMENT DES DONNÉES AVEC CACHE ---
-@st.cache_data(ttl=3600)
+# --- CHARGEMENT DES DONNÉES AVEC CACHE (5 min) ---
+@st.cache_data(ttl=300)
 def load_data(ticker, period):
-    # On laisse yfinance gérer sa propre session "curl_cffi" nativement
     return yf.Ticker(ticker).history(period=period)
+
+# --- PRIX LIVE VIA FAST_INFO ---
+def get_live_price(ticker):
+    try:
+        return round(float(yf.Ticker(ticker).fast_info["last_price"]), 2)
+    except:
+        return None
 
 data = load_data(user_ticker, period)
 
@@ -108,9 +114,10 @@ if not data.empty:
     st.markdown(f"""<div style="padding:20px; border-radius:10px; background-color:{v_col}; color:white; text-align:center; margin-bottom:25px;">
         <h1 style="margin:0;">{v_text}</h1><p style="margin:0; font-size:1.2em;">{v_desc}</p></div>""", unsafe_allow_html=True)
 
-    # Métriques
+    # Métriques — prix live via fast_info
+    live_price = get_live_price(user_ticker)
     c1, c2, c3 = st.columns(3)
-    c1.metric("Current Price", f"{data['Close'].iloc[-1]:.2f} $")
+    c1.metric("Current Price", f"{live_price if live_price else data['Close'].iloc[-1]:.2f} $")
     c2.metric("SMA Config", f"{fast_ma} / {slow_ma}")
     c3.metric("Strategy ROI", f"{run_backtest(fast_ma, slow_ma, data):.2f} %")
 
