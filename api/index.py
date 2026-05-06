@@ -28,8 +28,12 @@ def compute_signal(ticker: str, period: str = "1y", fast: int = 20, slow: int = 
             verdict = "STRONG BUY" if prev_f <= prev_s else "HOLD"
         else:
             verdict = "STRONG SELL" if prev_f >= prev_s else "AVOID"
-        price = round(float(data['Close'].iloc[-1]), 2)
-        # 1-month change
+        # Live price via fast_info (quasi real-time, no delay)
+        try:
+            price = round(float(yf.Ticker(ticker).fast_info["last_price"]), 2)
+        except:
+            price = round(float(data['Close'].iloc[-1]), 2)
+        # 1-month change based on historical close
         price_1m = float(data['Close'].iloc[-22]) if len(data) >= 22 else float(data['Close'].iloc[0])
         change_1m = round((price - price_1m) / price_1m * 100, 2)
         return {
@@ -56,11 +60,16 @@ def analyze(ticker: str = "NVDA", period: str = "2y", fast: int = 20, slow: int 
         verdict = "STRONG BUY" if prev_f <= prev_s else "HOLD"
     else:
         verdict = "STRONG SELL" if prev_f >= prev_s else "AVOID"
+    # Live price via fast_info (quasi real-time, no delay)
+    try:
+        current_price = round(float(yf.Ticker(ticker).fast_info["last_price"]), 2)
+    except:
+        current_price = round(float(data['Close'].iloc[-1]), 2)
     chart_data = data[['Close', 'SMA_F', 'SMA_S']].dropna().tail(200)
     chart_data.index = chart_data.index.strftime('%Y-%m-%d')
     return {
         "verdict": verdict,
-        "current_price": round(float(data['Close'].iloc[-1]), 2),
+        "current_price": current_price,
         "chart": chart_data.reset_index().rename(columns={"index": "Date"}).to_dict(orient="records")
     }
 
